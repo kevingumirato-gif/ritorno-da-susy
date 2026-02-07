@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ritorno da Susy</title>
+<link rel="manifest" href="manifest.json">
+<style>
+body{margin:0;background:#0e0b14;font-family:Arial,overflow:hidden}
+#game{width:100vw;height:100vh;position:relative}
+.scene{position:absolute;width:200%;height:100%}
+#text{position:absolute;top:20px;width:100%;text-align:center;color:white;font-size:18px;z-index:10;white-space:pre-line}
+#diletta{position:absolute;bottom:70px;left:40px;width:60px;height:120px;background:#c89b7b;border-radius:20px;animation:walk .6s infinite}
+#divano{position:absolute;bottom:40px;left:1000px;width:300px;height:120px;background:#6b3a2e;border-radius:40px;display:none}
+#susy{position:absolute;bottom:60px;left:1150px;width:60px;height:45px;background:white;border-radius:50%;display:none}
+.heart{position:absolute;font-size:20px;animation:floatUp 3s linear forwards}
+#finalHeart{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:80px;opacity:0;animation:pulse 2s infinite}
+@keyframes walk{0%{transform:translateY(0)}50%{transform:translateY(-4px)}100%{transform:translateY(0)}}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-120px)}}
+@keyframes pulse{0%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+</style>
+</head>
+<body>
+<div id="game">
+<div id="text">Cantina vinicola 🍷
+(Tocca per avanzare)</div>
+<div class="scene" id="scene"></div>
+<div id="diletta"></div>
+<div id="divano"></div>
+<div id="susy"></div>
+</div>
+<div id="finalHeart">❤️</div>
+
+<audio id="music" src="music.mp3" loop></audio>
+<audio id="purr" src="purr.mp3" loop></audio>
+
+<script>
+let livello=0,x=40;
+const scene=document.getElementById("scene");
+const diletta=document.getElementById("diletta");
+const text=document.getElementById("text");
+const music=document.getElementById("music");
+const purr=document.getElementById("purr");
+
+const livelli=[
+{bg:"#3b2618",msg:"Cantina vinicola 🍷"},
+{bg:"#2f2f4f",msg:"Ufficio 💼"},
+{bg:"#3f6b3f",msg:"Maratona 🏃‍♀️"},
+{bg:"#2b6f8f",msg:"Piscina 🏊‍♀️"},
+{bg:"#0e0b14",msg:"Casa. Notte. 🐱"}
+];
+scene.style.background=livelli[0].bg;
+
+document.body.onclick=()=>{
+music.play();
+x+=40;
+diletta.style.left=x+"px";
+scene.style.left=(-x/2)+"px";
+if(x>800){
+x=40;
+livello++;
+if(livello<livelli.length){
+scene.style.background=livelli[livello].bg;
+text.innerText=livelli[livello].msg;
+}
+if(livello==4) finale();
+}
+};
+
+function finale(){
+document.getElementById("divano").style.display="block";
+document.getElementById("susy").style.display="block";
+diletta.style.animation="none";
+purr.play();
+text.innerText="";
+const msg=[
+"Un giorno per celebrarti è solo uno su un milione e più per amarti.",
+"",
+"Ricorda che, quando e anche quando non ne avrai bisogno,",
+"saremo sempre nel tuo cuore.",
+"",
+"Con amore,",
+"i tuoi Susanna e Kevin"
+];
+scrivi(msg,0);
+setInterval(()=>{
+const h=document.createElement("div");
+h.className="heart";h.innerText="💗";
+h.style.left=(1000+Math.random()*200)+"px";
+h.style.bottom="120px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),3000);
+},600);
+}
+
+function scrivi(r,i){
+if(i>=r.length){
+setTimeout(()=>{
+document.body.style.background="black";
+document.getElementById("game").style.display="none";
+document.getElementById("finalHeart").style.opacity=1;
+},2500);
+return;
+}
+text.innerText+=r[i]+"\n";
+setTimeout(()=>scrivi(r,i+1),1400);
+}
+</script>
+</body>
+</html>
